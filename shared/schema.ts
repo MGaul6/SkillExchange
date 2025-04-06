@@ -1,5 +1,6 @@
 import { pgTable, text, serial, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { relations } from "drizzle-orm";
 import { z } from "zod";
 
 // Users table
@@ -17,6 +18,21 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const usersRelations = relations(users, ({ one, many }: { one: any, many: any }) => ({
+  profile: one(userProfiles, {
+    fields: [users.id],
+    references: [userProfiles.userId],
+  }),
+  teachingSkills: many(userSkills),
+  learningInterests: many(learningInterests),
+  sentRequests: many(skillRequests, { relationName: "fromUser" }),
+  receivedRequests: many(skillRequests, { relationName: "toUser" }),
+  teachingSessions: many(learningSessions, { relationName: "teacher" }),
+  learningSessions: many(learningSessions, { relationName: "learner" }),
+  sentFeedback: many(sessionFeedback, { relationName: "feedbackSender" }),
+  receivedFeedback: many(sessionFeedback, { relationName: "feedbackReceiver" }),
+}));
+
 // User skills table - skills a user can teach
 export const userSkills = pgTable("user_skills", {
   id: serial("id").primaryKey(),
@@ -26,6 +42,13 @@ export const userSkills = pgTable("user_skills", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const userSkillsRelations = relations(userSkills, ({ one }: { one: any }) => ({
+  user: one(users, {
+    fields: [userSkills.userId],
+    references: [users.id],
+  }),
+}));
+
 // User learning interests - skills a user wants to learn
 export const learningInterests = pgTable("learning_interests", {
   id: serial("id").primaryKey(),
@@ -34,6 +57,13 @@ export const learningInterests = pgTable("learning_interests", {
   level: text("level").notNull(), // Beginner, Intermediate, Advanced
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const learningInterestsRelations = relations(learningInterests, ({ one }: { one: any }) => ({
+  user: one(users, {
+    fields: [learningInterests.userId],
+    references: [users.id],
+  }),
+}));
 
 // User profiles table - additional profile information
 export const userProfiles = pgTable("user_profiles", {
@@ -48,6 +78,13 @@ export const userProfiles = pgTable("user_profiles", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const userProfilesRelations = relations(userProfiles, ({ one }: { one: any }) => ({
+  user: one(users, {
+    fields: [userProfiles.userId],
+    references: [users.id],
+  }),
+}));
+
 // Skill exchange requests table
 export const skillRequests = pgTable("skill_requests", {
   id: serial("id").primaryKey(),
@@ -60,6 +97,28 @@ export const skillRequests = pgTable("skill_requests", {
   message: text("message"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const skillRequestsRelations = relations(skillRequests, ({ one, many }: { one: any, many: any }) => ({
+  fromUser: one(users, {
+    fields: [skillRequests.fromUserId],
+    references: [users.id],
+    relationName: "fromUser",
+  }),
+  toUser: one(users, {
+    fields: [skillRequests.toUserId],
+    references: [users.id],
+    relationName: "toUser",
+  }),
+  teachSkill: one(userSkills, {
+    fields: [skillRequests.teachSkillId],
+    references: [userSkills.id],
+  }),
+  learnSkill: one(learningInterests, {
+    fields: [skillRequests.learnSkillId],
+    references: [learningInterests.id],
+  }),
+  sessions: many(learningSessions),
+}));
 
 // Learning sessions table
 export const learningSessions = pgTable("learning_sessions", {
@@ -75,6 +134,24 @@ export const learningSessions = pgTable("learning_sessions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const learningSessionsRelations = relations(learningSessions, ({ one, many }: { one: any, many: any }) => ({
+  request: one(skillRequests, {
+    fields: [learningSessions.requestId],
+    references: [skillRequests.id],
+  }),
+  teacher: one(users, {
+    fields: [learningSessions.teacherId],
+    references: [users.id],
+    relationName: "teacher",
+  }),
+  learner: one(users, {
+    fields: [learningSessions.learnerId],
+    references: [users.id],
+    relationName: "learner",
+  }),
+  feedback: many(sessionFeedback),
+}));
+
 // Feedback and ratings table
 export const sessionFeedback = pgTable("session_feedback", {
   id: serial("id").primaryKey(),
@@ -85,6 +162,23 @@ export const sessionFeedback = pgTable("session_feedback", {
   comment: text("comment"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const sessionFeedbackRelations = relations(sessionFeedback, ({ one }: { one: any }) => ({
+  session: one(learningSessions, {
+    fields: [sessionFeedback.sessionId],
+    references: [learningSessions.id],
+  }),
+  fromUser: one(users, {
+    fields: [sessionFeedback.fromUserId],
+    references: [users.id],
+    relationName: "feedbackSender",
+  }),
+  toUser: one(users, {
+    fields: [sessionFeedback.toUserId],
+    references: [users.id],
+    relationName: "feedbackReceiver",
+  }),
+}));
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({

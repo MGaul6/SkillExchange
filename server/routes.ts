@@ -14,6 +14,26 @@ import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint
+  app.get("/api/health", async (req, res) => {
+    try {
+      // Try to query the database to check connection
+      const result = await storage.healthCheck();
+      res.json({ 
+        status: "OK", 
+        message: "API is running", 
+        database: "Connected",
+        timestamp: new Date().toISOString() 
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        status: "Error", 
+        message: "API is running but database connection failed",
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
   // Users API
   app.post("/api/users/register", async (req, res) => {
     try {

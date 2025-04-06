@@ -12,11 +12,23 @@ import {
   type LearningSession,
   type InsertLearningSession,
   type SessionFeedback,
-  type InsertSessionFeedback
+  type InsertSessionFeedback,
+  users,
+  userSkills,
+  learningInterests,
+  userProfiles,
+  skillRequests,
+  learningSessions,
+  sessionFeedback
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, or } from "drizzle-orm";
 
 // Interface for all storage operations
 export interface IStorage {
+  // Health check
+  healthCheck(): Promise<boolean>;
+  
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -49,61 +61,32 @@ export interface IStorage {
   getSuggestedMatches(userId: number): Promise<any[]>;
 }
 
-// In-memory storage implementation
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private userSkills: Map<number, UserSkill>;
-  private learningInterests: Map<number, LearningInterest>;
-  private userProfiles: Map<number, UserProfile>;
-  private skillRequests: Map<number, SkillRequest>;
-  private learningSessions: Map<number, LearningSession>;
-  private sessionFeedback: Map<number, SessionFeedback>;
-  
-  private currentUserId: number;
-  private currentSkillId: number;
-  private currentInterestId: number;
-  private currentProfileId: number;
-  private currentRequestId: number;
-  private currentSessionId: number;
-  private currentFeedbackId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.userSkills = new Map();
-    this.learningInterests = new Map();
-    this.userProfiles = new Map();
-    this.skillRequests = new Map();
-    this.learningSessions = new Map();
-    this.sessionFeedback = new Map();
-    
-    this.currentUserId = 1;
-    this.currentSkillId = 1;
-    this.currentInterestId = 1;
-    this.currentProfileId = 1;
-    this.currentRequestId = 1;
-    this.currentSessionId = 1;
-    this.currentFeedbackId = 1;
-    
-    // Add some demo data
-    this.setupDemoData();
+// Database storage implementation
+export class DatabaseStorage implements IStorage {
+  // Health check
+  async healthCheck(): Promise<boolean> {
+    try {
+      // Simple query to check if the database is connected
+      const result = await db.execute('SELECT 1 as result');
+      return true;
+    } catch (error) {
+      console.error("Database health check failed:", error);
+      throw new Error("Database connection failed");
+    }
   }
-
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(userData: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const now = new Date();
-    const user: User = { ...userData, id, createdAt: now };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(userData).returning();
     return user;
   }
 
@@ -116,163 +99,182 @@ export class MemStorage implements IStorage {
   }
 
   async updateUserProfile(userId: number, profileData: InsertUserProfile): Promise<UserProfile> {
-    // Check if user exists
+    // First check if user exists
     const user = await this.getUser(userId);
     if (!user) {
       throw new Error("User not found");
     }
 
     // Check if profile already exists
-    let profile = Array.from(this.userProfiles.values()).find(
-      (profile) => profile.userId === userId
-    );
+    const [existingProfile] = await db
+      .select()
+      .from(userProfiles)
+      .where(eq(userProfiles.userId, userId));
 
-    if (profile) {
+    if (existingProfile) {
       // Update existing profile
-      profile = { ...profile, ...profileData };
-      this.userProfiles.set(profile.id, profile);
+      const [updatedProfile] = await db
+        .update(userProfiles)
+        .set({
+          ...profileData,
+          userId // Keep userId the same as it should not change
+        })
+        .where(eq(userProfiles.id, existingProfile.id))
+        .returning();
+      return updatedProfile;
     } else {
       // Create new profile
-      const id = this.currentProfileId++;
-      const now = new Date();
-      profile = { ...profileData, id, userId, createdAt: now };
-      this.userProfiles.set(id, profile);
+      const [newProfile] = await db
+        .insert(userProfiles)
+        .values({
+          ...profileData,
+          userId
+        })
+        .returning();
+      return newProfile;
     }
-
-    return profile;
   }
 
   // Skills operations
   async addUserSkill(skillData: InsertUserSkill): Promise<UserSkill> {
-    const id = this.currentSkillId++;
-    const now = new Date();
-    const skill: UserSkill = { ...skillData, id, createdAt: now };
-    this.userSkills.set(id, skill);
+    const [skill] = await db.insert(userSkills).values(skillData).returning();
     return skill;
   }
 
   async getUserSkills(userId: number): Promise<UserSkill[]> {
-    return Array.from(this.userSkills.values()).filter(
-      (skill) => skill.userId === userId
-    );
+    return db.select().from(userSkills).where(eq(userSkills.userId, userId));
   }
 
   // Learning interests operations
   async addLearningInterest(interestData: InsertLearningInterest): Promise<LearningInterest> {
-    const id = this.currentInterestId++;
-    const now = new Date();
-    const interest: LearningInterest = { ...interestData, id, createdAt: now };
-    this.learningInterests.set(id, interest);
+    const [interest] = await db.insert(learningInterests).values(interestData).returning();
     return interest;
   }
 
   async getLearningInterests(userId: number): Promise<LearningInterest[]> {
-    return Array.from(this.learningInterests.values()).filter(
-      (interest) => interest.userId === userId
-    );
+    return db.select().from(learningInterests).where(eq(learningInterests.userId, userId));
   }
 
   // Skill requests operations
   async createSkillRequest(requestData: InsertSkillRequest): Promise<SkillRequest> {
-    const id = this.currentRequestId++;
-    const now = new Date();
-    const request: SkillRequest = { ...requestData, id, createdAt: now };
-    this.skillRequests.set(id, request);
+    const [request] = await db.insert(skillRequests).values(requestData).returning();
     return request;
   }
 
   async getUserSkillRequests(userId: number): Promise<SkillRequest[]> {
-    return Array.from(this.skillRequests.values()).filter(
-      (request) => request.fromUserId === userId || request.toUserId === userId
-    );
+    return db
+      .select()
+      .from(skillRequests)
+      .where(
+        or(
+          eq(skillRequests.fromUserId, userId),
+          eq(skillRequests.toUserId, userId)
+        )
+      );
   }
 
   async updateSkillRequestStatus(id: number, status: string): Promise<SkillRequest> {
-    const request = this.skillRequests.get(id);
-    if (!request) {
+    const [updatedRequest] = await db
+      .update(skillRequests)
+      .set({ status })
+      .where(eq(skillRequests.id, id))
+      .returning();
+    
+    if (!updatedRequest) {
       throw new Error("Skill request not found");
     }
     
-    const updatedRequest = { ...request, status };
-    this.skillRequests.set(id, updatedRequest);
     return updatedRequest;
   }
 
   // Learning sessions operations
   async createLearningSession(sessionData: InsertLearningSession): Promise<LearningSession> {
-    const id = this.currentSessionId++;
-    const now = new Date();
-    const session: LearningSession = { ...sessionData, id, createdAt: now };
-    this.learningSessions.set(id, session);
+    const [session] = await db.insert(learningSessions).values(sessionData).returning();
     return session;
   }
 
   async getUserLearningSessions(userId: number): Promise<LearningSession[]> {
-    return Array.from(this.learningSessions.values()).filter(
-      (session) => session.teacherId === userId || session.learnerId === userId
-    );
+    return db
+      .select()
+      .from(learningSessions)
+      .where(
+        or(
+          eq(learningSessions.teacherId, userId),
+          eq(learningSessions.learnerId, userId)
+        )
+      );
   }
 
   // Feedback operations
   async createSessionFeedback(feedbackData: InsertSessionFeedback): Promise<SessionFeedback> {
-    const id = this.currentFeedbackId++;
-    const now = new Date();
-    const feedback: SessionFeedback = { ...feedbackData, id, createdAt: now };
-    this.sessionFeedback.set(id, feedback);
+    const [feedback] = await db.insert(sessionFeedback).values(feedbackData).returning();
     return feedback;
   }
 
   async getUserReceivedFeedback(userId: number): Promise<SessionFeedback[]> {
-    return Array.from(this.sessionFeedback.values()).filter(
-      (feedback) => feedback.toUserId === userId
-    );
+    return db
+      .select()
+      .from(sessionFeedback)
+      .where(eq(sessionFeedback.toUserId, userId));
   }
 
-  // Match suggestions - this is a simplified version for demo purposes
+  // Match suggestions
   async getSuggestedMatches(userId: number): Promise<any[]> {
-    // In a real implementation, this would use an algorithm to match users based on skills and interests
-    // For now, just return some other users
-    const currentUser = await this.getUser(userId);
-    if (!currentUser) {
+    // Check if user exists
+    const user = await this.getUser(userId);
+    if (!user) {
       return [];
     }
-    
+
     // Get user's skills and interests
-    const userSkills = await this.getUserSkills(userId);
-    const userInterests = await this.getLearningInterests(userId);
+    const userTeachingSkills = await this.getUserSkills(userId);
+    const userLearningInterests = await this.getLearningInterests(userId);
+
+    // Get all users and filter out the current user
+    const allUsers = await db
+      .select()
+      .from(users);
     
-    // Get all other users
-    const otherUsers = Array.from(this.users.values()).filter(
-      (user) => user.id !== userId
-    );
-    
-    // Simple matching algorithm - just return other users with calculated match percentages
+    const otherUsers = userId !== undefined
+      ? allUsers.filter(user => user.id !== userId)
+      : allUsers;
+
+    // Get all skills and interests for all users
+    const allSkills = await db.select().from(userSkills);
+    const allInterests = await db.select().from(learningInterests);
+
+    // Match users based on skills and interests
     const matches = await Promise.all(
       otherUsers.map(async (otherUser) => {
-        const otherUserSkills = await this.getUserSkills(otherUser.id);
-        const otherUserInterests = await this.getLearningInterests(otherUser.id);
-        
-        // Calculate a match score
+        // Filter skills and interests for this user
+        const otherUserSkills = allSkills.filter(
+          (skill) => skill.userId === otherUser.id
+        );
+        const otherUserInterests = allInterests.filter(
+          (interest) => interest.userId === otherUser.id
+        );
+
+        // Calculate match score
         let matchScore = 0;
-        
+
         // Check if other user teaches skills the current user wants to learn
-        for (const interest of userInterests) {
-          if (otherUserSkills.some(skill => skill.name.toLowerCase() === interest.name.toLowerCase())) {
+        for (const interest of userLearningInterests) {
+          if (otherUserSkills.some((skill) => skill.name.toLowerCase() === interest.name.toLowerCase())) {
             matchScore += 25;
           }
         }
-        
+
         // Check if current user teaches skills the other user wants to learn
-        for (const skill of userSkills) {
-          if (otherUserInterests.some(interest => interest.name.toLowerCase() === skill.name.toLowerCase())) {
+        for (const skill of userTeachingSkills) {
+          if (otherUserInterests.some((interest) => interest.name.toLowerCase() === skill.name.toLowerCase())) {
             matchScore += 25;
           }
         }
-        
-        // Add some randomness for demo
+
+        // Add some randomness for variety
         matchScore += Math.floor(Math.random() * 50);
         if (matchScore > 100) matchScore = 100;
-        
+
         return {
           id: otherUser.id,
           name: `${otherUser.firstName} ${otherUser.lastName}`,
@@ -285,70 +287,11 @@ export class MemStorage implements IStorage {
         };
       })
     );
-    
-    // Sort by match percentage
-    return matches.sort((a, b) => b.matchPercentage - a.matchPercentage);
-  }
 
-  // Setup demo data for testing
-  private setupDemoData() {
-    // Add some demo users
-    const user1: User = {
-      id: this.currentUserId++,
-      username: "sarahj",
-      email: "sarah@example.com",
-      password: "password123",
-      firstName: "Sarah",
-      lastName: "Johnson",
-      profilePicture: "",
-      location: "New York, USA",
-      timezone: "UTC-5:00 (Eastern Time)",
-      bio: "Language enthusiast and web developer",
-      createdAt: new Date(),
-    };
-    this.users.set(user1.id, user1);
-    
-    const user2: User = {
-      id: this.currentUserId++,
-      username: "michaelt",
-      email: "michael@example.com",
-      password: "password123",
-      firstName: "Michael",
-      lastName: "Torres",
-      profilePicture: "",
-      location: "Los Angeles, USA",
-      timezone: "UTC-8:00 (Pacific Time)",
-      bio: "Guitar player and coding enthusiast",
-      createdAt: new Date(),
-    };
-    this.users.set(user2.id, user2);
-    
-    // Add some skills
-    this.addUserSkill({
-      userId: user1.id,
-      name: "French",
-      level: "Advanced",
-    });
-    
-    this.addUserSkill({
-      userId: user2.id,
-      name: "Guitar",
-      level: "Intermediate",
-    });
-    
-    // Add some learning interests
-    this.addLearningInterest({
-      userId: user1.id,
-      name: "Web Development",
-      level: "Beginner",
-    });
-    
-    this.addLearningInterest({
-      userId: user2.id,
-      name: "Python",
-      level: "Beginner",
-    });
+    // Sort by match percentage (highest first)
+    return matches.sort((a, b) => b.matchPercentage - a.matchPercentage);
   }
 }
 
-export const storage = new MemStorage();
+// Initialize and export the storage instance
+export const storage = new DatabaseStorage();
