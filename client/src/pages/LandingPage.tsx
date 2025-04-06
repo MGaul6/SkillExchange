@@ -19,7 +19,7 @@ const LandingPage = () => {
           </p>
           <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
             <Link href="/register">
-              <Button size="lg" className="px-8 py-3 bg-primary-600 hover:bg-primary-700">
+              <Button size="lg" className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg transition-all duration-300 hover:scale-105">
                 Sign Up
               </Button>
             </Link>
@@ -35,25 +35,50 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="mt-8 lg:mt-0 lg:w-1/2 flex justify-center">
-          <div className="h-auto w-full max-w-md rounded-lg shadow-xl overflow-hidden">
+          <div className="h-auto w-full max-w-md rounded-lg shadow-xl overflow-hidden bg-gradient-to-br from-primary-50 to-secondary-50 p-6">
             <svg 
-              className="w-full h-64 bg-gray-100 text-gray-300"
+              className="w-full h-64"
+              viewBox="0 0 500 350" 
               fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <rect width="100%" height="100%" fill="#f3f4f6" />
-              <text 
-                x="50%" 
-                y="50%" 
-                textAnchor="middle" 
-                dominantBaseline="middle"
-                fontSize="20"
-                fill="#9ca3af"
-              >
-                Diverse people collaborating
-              </text>
+              {/* Background elements */}
+              <circle cx="250" cy="175" r="150" fill="#f9fafb" />
+              <path d="M100,320 Q250,220 400,320" stroke="#e1e1e8" strokeWidth="2" fill="none" />
+              <path d="M80,300 Q250,200 420,300" stroke="#e1e1e8" strokeWidth="2" fill="none" />
+              
+              {/* First person */}
+              <circle cx="180" cy="170" r="40" fill="#6366f1" opacity="0.9" />
+              <circle cx="180" cy="140" r="20" fill="#818cf8" />
+              <rect x="160" y="170" width="40" height="80" rx="10" fill="#6366f1" />
+              <rect x="160" y="250" width="15" height="40" rx="5" fill="#6366f1" />
+              <rect x="185" y="250" width="15" height="40" rx="5" fill="#6366f1" />
+              <rect x="145" y="180" width="15" height="40" rx="5" fill="#6366f1" />
+              <rect x="200" y="180" width="15" height="40" rx="5" fill="#6366f1" />
+              
+              {/* Second person */}
+              <circle cx="320" cy="170" r="40" fill="#ec4899" opacity="0.9" />
+              <circle cx="320" cy="140" r="20" fill="#f472b6" />
+              <rect x="300" y="170" width="40" height="80" rx="10" fill="#ec4899" />
+              <rect x="300" y="250" width="15" height="40" rx="5" fill="#ec4899" />
+              <rect x="325" y="250" width="15" height="40" rx="5" fill="#ec4899" />
+              <rect x="285" y="180" width="15" height="40" rx="5" fill="#ec4899" />
+              <rect x="340" y="180" width="15" height="40" rx="5" fill="#ec4899" />
+              
+              {/* Connection between people */}
+              <path d="M220,170 Q250,140 280,170" stroke="#4f46e5" strokeWidth="3" strokeDasharray="5,5" />
+              <path d="M220,190 Q250,220 280,190" stroke="#be185d" strokeWidth="3" strokeDasharray="5,5" />
+              
+              {/* Stars/Sparks */}
+              <circle cx="250" cy="120" r="5" fill="#f59e0b" />
+              <circle cx="230" cy="140" r="3" fill="#f59e0b" />
+              <circle cx="270" cy="140" r="3" fill="#f59e0b" />
+              <circle cx="200" cy="100" r="4" fill="#f59e0b" />
+              <circle cx="300" cy="100" r="4" fill="#f59e0b" />
+              
+              {/* Text bubbles */}
+              <rect x="150" y="80" width="60" height="30" rx="15" fill="white" stroke="#d1d5db" />
+              <rect x="290" y="80" width="60" height="30" rx="15" fill="white" stroke="#d1d5db" />
             </svg>
           </div>
         </div>
