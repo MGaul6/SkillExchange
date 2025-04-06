@@ -67,7 +67,7 @@ const Navbar = () => {
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button className="bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg">
                     Sign Up
                   </Button>
                 </Link>
@@ -132,7 +132,7 @@ const Navbar = () => {
                 Login
               </div>
               <div 
-                className="block px-3 py-2 text-base font-medium text-primary-600 hover:bg-gray-100"
+                className="block px-3 py-2 text-base font-medium text-blue-600 hover:bg-blue-50 font-bold"
                 onClick={() => {
                   navigate("/register");
                   setMobileMenuOpen(false);

@@ -19,7 +19,7 @@ const LandingPage = () => {
           </p>
           <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
             <Link href="/register">
-              <Button size="lg" className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg transition-all duration-300 hover:scale-105">
+              <Button size="lg" className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105">
                 Sign Up
               </Button>
             </Link>
