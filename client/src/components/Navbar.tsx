@@ -38,6 +38,12 @@ const Navbar = () => {
           </div>
           
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+            <Link href="/#about">
+              <Button variant="link" className="text-primary-600 hover:text-primary-700">
+                About
+              </Button>
+            </Link>
+            
             {userLoggedIn ? (
               <>
                 <Link href="/dashboard">
@@ -62,7 +68,7 @@ const Navbar = () => {
                 </Link>
                 <Link href="/register">
                   <Button className="bg-primary-600 hover:bg-primary-700">
-                    Join Now
+                    Sign Up
                   </Button>
                 </Link>
               </>
@@ -83,33 +89,57 @@ const Navbar = () => {
       {/* Mobile menu */}
       <div className={`sm:hidden ${mobileMenuOpen ? "" : "hidden"}`}>
         <div className="pt-2 pb-3 space-y-1">
+          <div 
+            className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+            onClick={() => {
+              navigate("/#about");
+              setMobileMenuOpen(false);
+            }}
+          >
+            About
+          </div>
+          
           {userLoggedIn ? (
             <>
-              <Link href="/dashboard">
-                <a className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
-                  Dashboard
-                </a>
-              </Link>
-              <a 
-                href="#" 
+              <div 
                 className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
-                onClick={handleLogout}
+                onClick={() => {
+                  navigate("/dashboard");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Dashboard
+              </div>
+              <div 
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenuOpen(false);
+                }}
               >
                 Logout
-              </a>
+              </div>
             </>
           ) : (
             <>
-              <Link href="/login">
-                <a className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
-                  Login
-                </a>
-              </Link>
-              <Link href="/register">
-                <a className="block px-3 py-2 text-base font-medium text-primary-600 hover:bg-gray-100">
-                  Join Now
-                </a>
-              </Link>
+              <div 
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+                onClick={() => {
+                  navigate("/login");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Login
+              </div>
+              <div 
+                className="block px-3 py-2 text-base font-medium text-primary-600 hover:bg-gray-100"
+                onClick={() => {
+                  navigate("/register");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Sign Up
+              </div>
             </>
           )}
         </div>

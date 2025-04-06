@@ -20,16 +20,18 @@ const LandingPage = () => {
           <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
             <Link href="/register">
               <Button size="lg" className="px-8 py-3 bg-primary-600 hover:bg-primary-700">
-                Join Now
+                Sign Up
               </Button>
             </Link>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="px-8 py-3 text-primary-700 border-primary-300"
-            >
-              Learn More
-            </Button>
+            <Link href="#about">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="px-8 py-3 text-primary-700 border-primary-300"
+              >
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="mt-8 lg:mt-0 lg:w-1/2 flex justify-center">
@@ -84,27 +86,37 @@ const LandingPage = () => {
         </div>
       </div>
       
-      {/* Testimonials */}
-      <div className="mt-24 pb-12">
-        <h2 className="mb-12">Join our growing community</h2>
-        <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          <TestimonialCard 
-            name="Sarah J."
-            rating={5}
-            testimonial="I taught Spanish while learning web development. The platform made it easy to find the right partner and schedule our sessions."
-          />
-          
-          <TestimonialCard 
-            name="Michael T."
-            rating={4.5}
-            testimonial="As a musician, I've connected with a graphic designer who needed piano lessons. Now I have an amazing website and they're playing Bach!"
-          />
-          
-          <TestimonialCard 
-            name="Emma L."
-            rating={5}
-            testimonial="I was looking for someone to teach me digital marketing while offering yoga instruction. Found the perfect match within days!"
-          />
+      {/* About Section */}
+      <div id="about" className="mt-24 pb-12">
+        <h2 className="mb-6">About SkillSwap</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div>
+            <p className="text-lg text-gray-700 mb-6">
+              SkillSwap was founded with a simple idea: everyone has something to teach and something to learn. Our platform connects individuals with complementary skills, enabling them to exchange knowledge in a collaborative and supportive environment.
+            </p>
+            <p className="text-lg text-gray-700 mb-6">
+              Whether you're looking to learn a new language, improve your coding skills, or master an instrument, SkillSwap helps you find the perfect teaching partner who is interested in what you have to offer in return.
+            </p>
+            <p className="text-lg text-gray-700">
+              Join our community today and be part of a growing network of lifelong learners and skilled teachers from around the world.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-primary-600 mb-6">What Our Users Say</h3>
+            <div className="space-y-6">
+              <TestimonialCard 
+                name="Sarah J."
+                rating={5}
+                testimonial="I taught Spanish while learning web development. The platform made it easy to find the right partner and schedule our sessions."
+              />
+              
+              <TestimonialCard 
+                name="Michael T."
+                rating={4.5}
+                testimonial="As a musician, I've connected with a graphic designer who needed piano lessons. Now I have an amazing website and they're playing Bach!"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
