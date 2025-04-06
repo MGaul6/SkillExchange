@@ -23,15 +23,16 @@ const LandingPage = () => {
                 Sign Up
               </Button>
             </Link>
-            <Link href="#about">
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="px-8 py-3 text-primary-700 border-primary-300"
-              >
-                Learn More
-              </Button>
-            </Link>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="px-8 py-3 text-blue-700 border-blue-300 hover:bg-blue-50"
+              onClick={() => {
+                document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Learn More
+            </Button>
           </div>
         </div>
         <div className="mt-8 lg:mt-0 lg:w-1/2 flex justify-center">

@@ -93,7 +93,7 @@ const Register = () => {
       <div className="max-w-2xl mx-auto">
         <Card>
           <CardContent className="pt-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Your SkillSwap Account</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6" style={{color: '#1e3a8a'}}>Create Your SkillSwap Account</h2>
             
             <Tabs defaultValue="email">
               <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -174,7 +174,7 @@ const Register = () => {
                       <p className="mt-1 text-sm text-red-500">{errors.terms}</p>
                     )}
                     
-                    <Button type="submit" className="w-full bg-primary-600 hover:bg-primary-700">
+                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg">
                       Create Account
                     </Button>
                   </div>

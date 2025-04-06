@@ -38,11 +38,19 @@ const Navbar = () => {
           </div>
           
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-            <Link href="/#about">
-              <Button variant="link" className="text-primary-600 hover:text-primary-700">
-                About
-              </Button>
-            </Link>
+            <Button 
+              variant="link" 
+              className="text-blue-600 hover:text-blue-700 font-medium"
+              onClick={() => {
+                if (window.location.pathname === '/') {
+                  document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  window.location.href = '/#about';
+                }
+              }}
+            >
+              About
+            </Button>
             
             {userLoggedIn ? (
               <>
@@ -62,7 +70,7 @@ const Navbar = () => {
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="link" className="text-primary-600 hover:text-primary-700">
+                  <Button variant="link" className="text-blue-600 hover:text-blue-700 font-medium">
                     Login
                   </Button>
                 </Link>
@@ -90,10 +98,14 @@ const Navbar = () => {
       <div className={`sm:hidden ${mobileMenuOpen ? "" : "hidden"}`}>
         <div className="pt-2 pb-3 space-y-1">
           <div 
-            className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+            className="block px-3 py-2 text-base font-medium text-blue-600 hover:bg-blue-50 font-medium"
             onClick={() => {
-              navigate("/#about");
-              setMobileMenuOpen(false);
+              if (window.location.pathname === '/') {
+                document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+                setMobileMenuOpen(false);
+              } else {
+                window.location.href = '/#about';
+              }
             }}
           >
             About
@@ -123,7 +135,7 @@ const Navbar = () => {
           ) : (
             <>
               <div 
-                className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+                className="block px-3 py-2 text-base font-medium text-blue-600 hover:bg-blue-50 font-medium"
                 onClick={() => {
                   navigate("/login");
                   setMobileMenuOpen(false);
