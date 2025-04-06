@@ -1,0 +1,93 @@
+1. User Registration & Profile Setup
+🔹 Step 1: Landing Page
+Visitors see a brief introduction to the platform and its benefits.
+
+CTA buttons: “Join Now” or “Login”.
+
+🔹 Step 2: Sign-up Page
+Users sign up via:
+✅ Email & Password OR
+✅ Google/Facebook Authentication
+
+After signing up, they receive a verification email/SMS to activate the account.
+
+2. Profile Creation (Onboarding Process)
+After successful registration, the user sets up their profile through a guided process:
+
+🔹 Step 3: Basic Information
+Full Name
+
+Profile Picture (optional but recommended)
+
+Location & Time Zone (for scheduling purposes)
+
+Short Bio
+
+🔹 Step 4: Skill Offering & Learning Preferences
+Users provide:
+
+Skills They Can Teach (e.g., "Web Development - Beginner to Advanced")
+
+Skills They Want to Learn (e.g., "French - Conversational Level")
+
+Preferred Learning Mode (Video calls, chat-based, pre-recorded lessons, etc.)
+
+Availability Schedule (Days and time slots they are available)
+
+🔹 Step 5: Set Learning Goals
+Users define their learning goals & expectations (e.g., "I want to learn Python for Data Science within 3 months").
+
+AI can suggest ideal partners based on these preferences.
+
+🔹 Step 6: Profile Completion & Dashboard Access
+
+A welcome message confirms the profile setup.
+
+The user is redirected to their dashboard.
+
+3. Login & Dashboard Experience
+🔹 Step 7: User Login
+Users log in via email/password or Google/Facebook.
+
+🔹 Step 8: Accessing the Dashboard
+The dashboard provides:
+✅ Skill Matches – AI suggests potential partners based on interests.
+✅ Search & Filter – Users can manually search for skill partners.
+✅ Pending Requests – Incoming/outgoing skill exchange requests.
+✅ Schedule & Calendar – Users manage their learning/training sessions.
+
+4. Finding Skill Exchange Partners
+🔹 Step 9: Browse & Filter Profiles
+Users can browse profiles using filters:
+🔍 Skill category (Programming, Language, Art, Music, etc.)
+🔍 Learning Level (Beginner, Intermediate, Expert)
+🔍 Availability (Time slots matching their schedule)
+🔍 Location (for those preferring local connections)
+
+5. Initiating a Skill Exchange
+🔹 Step 10: Sending a Skill Exchange Request
+Users select a profile and send a request.
+
+The request includes:
+✅ Skill Offering (What they will teach)
+✅ Skill Request (What they want to learn)
+✅ Proposed Schedule (Suggested date & time for first session)
+
+The recipient can accept, reject, or propose changes.
+
+🔹 Step 11: Messaging & Interaction
+Once matched, users can chat or set up a video call.
+
+Platform provides tools like shared notes, whiteboards, and file uploads for collaboration.
+
+6. Conducting the Skill Exchange Session
+🔹 Step 12: Scheduled Learning Session
+Users meet at the agreed time via integrated video call or external links (Zoom, Google Meet).
+
+They exchange knowledge based on the agreed terms.
+
+🔹 Step 13: Session Feedback & Rating
+After each session:
+✅ Both users rate each other (out of 5 stars).
+✅ Option to leave feedback (e.g., "Great teacher, very patient!").
+
