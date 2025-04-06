@@ -517,7 +517,7 @@ const ProfileSetup = () => {
                 <p className="text-gray-600 mb-8">You're all set to start exchanging skills and learning new things.</p>
                 <Button 
                   size="lg"
-                  className="px-8 py-3 bg-primary-600 hover:bg-primary-700"
+                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg"
                   onClick={handleComplete}
                 >
                   Go to Dashboard
@@ -538,7 +538,7 @@ const ProfileSetup = () => {
                 <div></div>
                 <Button 
                   onClick={nextStep}
-                  className="bg-primary-600 hover:bg-primary-700"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg"
                 >
                   Next
                 </Button>
