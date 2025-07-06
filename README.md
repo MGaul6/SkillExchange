@@ -23,14 +23,14 @@ SkillExchange is a MERN stack-based platform where users can exchange skills and
 ## 🗂 Project Structure
 
 SkillExchange/
-├── client/ # Frontend (React + Vite)
-├── server/ # Backend (Node + Express)
-├── shared/ # Shared Types (optional)
-└── README.md
 
-yaml
-Copy
-Edit
+├── client/ # Frontend (React + Vite)
+
+├── server/ # Backend (Node + Express)
+
+├── shared/ # Shared Types (optional)
+
+└── README.md
 
 ---
 
