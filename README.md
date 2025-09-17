@@ -38,15 +38,13 @@ SkillExchange/
 
 ### Backend
 
-```bash
+
 cd server
 npm install
 # Add DATABASE_URL in .env
 npm run dev
 Frontend
-bash
-Copy
-Edit
+
 cd client
 npm install
 # Add VITE_BACKEND_URL in .env
